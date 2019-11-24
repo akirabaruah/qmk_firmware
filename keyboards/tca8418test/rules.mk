@@ -1,6 +1,7 @@
 # MCU name
 MCU = atmega32u4
 
+# This seems necessary for feather ble
 F_CPU = 8000000
 
 # Bootloader selection
@@ -34,3 +35,7 @@ AUDIO_ENABLE = no           # Audio output on port C6
 FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
 HD44780_ENABLE = no 		# Enable support for HD44780 based LCDs (+400)
 
+SRC += matrix.c
+QUANTUM_LIB_SRC += i2c_master.c
+
+CUSTOM_MATRIX    = yes # Custom matrix_init and matrix_scan

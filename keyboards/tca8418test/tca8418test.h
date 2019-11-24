@@ -16,6 +16,10 @@
 #pragma once
 
 #include "quantum.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include "i2c_master.h"
+#include <util/delay.h>
 #define ___ KC_NO
 
 // This a shortcut to help you visually see your layout.

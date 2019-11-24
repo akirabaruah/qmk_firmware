@@ -29,7 +29,8 @@
 
 /* key matrix size */
 #define MATRIX_ROWS 4
-#define MATRIX_COLS 6
+#define MATRIX_COLS 12
+#define MATRIX_COLS_PER_SIDE (MATRIX_COLS/ 2)
 
 /* define if matrix has ghost */
 //#define MATRIX_HAS_GHOST
@@ -77,5 +78,5 @@
 #define MATRIX_COL_PINS { F1, D6, B7, B6, B5, D7 }
 #define UNUSED_PINS
 
-/* COL2ROW, ROW2COL*/
-#define DIODE_DIRECTION COL2ROW
+/* #define DIODE_DIRECTION COL2ROW */
+#define DIODE_DIRECTION ROW2COL
