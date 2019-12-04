@@ -250,7 +250,14 @@ uint8_t matrix_scan(void) {
 #elif (DIODE_DIRECTION == ROW2COL)
     // Set col, read rows
     for (uint8_t current_col = 0; current_col < MATRIX_COLS; current_col++) {
+      if (current_col < MATRIX_COLS_PER_SIDE) {
+        // USB/Microcontroller Side
         changed |= read_rows_on_col(raw_matrix, current_col);
+      }
+      else {
+        // i2c Side
+        // TODO read tca8418 i2c fifo
+      }
     }
 #endif
 

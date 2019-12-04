@@ -30,7 +30,7 @@
 /* key matrix size */
 #define MATRIX_ROWS 4
 #define MATRIX_COLS 12
-#define MATRIX_COLS_PER_SIDE (MATRIX_COLS/ 2)
+#define MATRIX_COLS_PER_SIDE (MATRIX_COLS/2)
 
 /* define if matrix has ghost */
 //#define MATRIX_HAS_GHOST
@@ -74,8 +74,18 @@
  *                  ROW2COL = ROW = Anode (+), COL = Cathode (-, marked on diode)
  *
 */
+
+
+/*
+// Feather BLE Row & Column Pins
 #define MATRIX_ROW_PINS { F7, F6, F5, F4 }
 #define MATRIX_COL_PINS { F1, D6, B7, B6, B5, D7 }
+*/
+
+// ProMicro Row & Column Pins
+#define MATRIX_ROW_PINS { F4, F5, F6, F7 }
+#define MATRIX_COL_PINS { B5, B4, E6, D7, C6, D4 }
+
 #define UNUSED_PINS
 
 /* #define DIODE_DIRECTION COL2ROW */

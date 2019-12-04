@@ -1,8 +1,11 @@
 # MCU name
 MCU = atmega32u4
 
-# This seems necessary for feather ble
-F_CPU = 8000000
+# FeatherBLE
+# F_CPU = 8000000
+
+# ProMicro
+F_CPU = 16000000
 
 # Bootloader selection
 #   Teensy       halfkay
