@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <avr/io.h>
+#include <util/delay.h>
 #include "wait.h"
 #include "print.h"
 #include "debug.h"
@@ -9,7 +10,135 @@
 #include "debounce.h"
 #include "quantum.h"
 #include "action_layer.h"
+#include "i2c_master.h"
 #include QMK_KEYBOARD_H
+
+#define TCA8418_I2C_ADDRESS 0x34
+#define TCA8418_I2C_TIMEOUT 100
+
+#define KEY_EVENT_LIST_SIZE 10
+
+#define REGISTER_CFG 0x01
+#define REGISTER_KP_GPIO1 0x1D
+#define REGISTER_KP_GPIO2 0x1E
+#define REGISTER_KP_GPIO3 0x1F
+
+#define REGISTER_KEY_EVENT_A 0x04
+#define REGISTER_KEY_EVENT_B 0x05
+#define REGISTER_KEY_EVENT_C 0x06
+#define REGISTER_KEY_EVENT_D 0x07
+#define REGISTER_KEY_EVENT_E 0x08
+#define REGISTER_KEY_EVENT_F 0x09
+#define REGISTER_KEY_EVENT_G 0x0A
+#define REGISTER_KEY_EVENT_H 0x0B
+#define REGISTER_KEY_EVENT_I 0x0C
+#define REGISTER_KEY_EVENT_J 0x0D
+
+void tca8418_init(void) {
+  print("tca8418_init() start\n");
+  i2c_init();
+
+  /*
+    | ADDRESS | REGISTER NAME | REGISTER DESCRIPTION | BIT7 | BIT6 | BIT5 | BIT4 | BIT3 | BIT2 | BIT1 | BIT0 |
+    |---------+---------------+----------------------+------+------+------+------+------+------+------+------|
+    |    0x1D | KP_GPIO1      | Keypad/GPIO Select 1 | ROW7 | ROW6 | ROW5 | ROW4 | ROW3 | ROW2 | ROW1 | ROW0 |
+    |    0x1E | KP_GPIO2      | Keypad/GPIO Select 2 | COL7 | COL6 | COL5 | COL4 | COL3 | COL2 | COL1 | COL0 |
+    |    0x1F | KP_GPIO3      | Keypad/GPIO Select 3 | N/A  | N/A  | N/A  | N/A  | N/A  | N/A  | COL9 | COL8 |
+  */
+
+  // everything enabled in key scan mode
+  uint8_t enabled_rows = 0x0F; // ROWS 3 to 0
+  uint8_t enabled_cols = 0x3F; // COLS 5 to 0
+
+  i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_KP_GPIO1, &enabled_rows, 1, TCA8418_I2C_TIMEOUT);
+  _delay_ms(10);
+  i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_KP_GPIO2, &enabled_cols, 1, TCA8418_I2C_TIMEOUT);
+  _delay_ms(10);
+
+  /*
+    BIT: NAME
+
+    7: AI
+    Auto-increment for read and write operations; See below table for more information
+    0 = disabled
+    1 = enabled
+
+    6: GPI_E_CFG
+    GPI event mode configuration
+    0 = GPI events are tracked when keypad is locked
+    1 = GPI events are not tracked when keypad is locked
+
+    5: OVR_FLOW_M
+    Overflow mode
+    0 = disabled; Overflow data is lost
+    1 = enabled; Overflow data shifts with last event pushing first event out
+
+    4: INT_CFG
+    Interrupt configuration
+    0 = processor interrupt remains asserted (or low) if host tries to clear interrupt while there is
+    still a pending key press, key release or GPI interrupt
+    1 = processor interrupt is deasserted for 50 μs and reassert with pending interrupts
+
+    3: OVR_FLOW_IEN
+    Overflow interrupt enable
+    0 = disabled; INT is not asserted if the FIFO overflows
+    1 = enabled; INT becomes asserted if the FIFO overflows
+
+    2: K_LCK_IEN
+    Keypad lock interrupt enable
+    0 = disabled; INT is not asserted after a correct unlock key sequence
+    1 = enabled; INT becomes asserted after a correct unlock key sequence
+
+    1: GPI_IEN
+    GPI interrupt enable to host processor
+    0 = disabled; INT is not asserted for a change on a GPI
+    1 = enabled; INT becomes asserted for a change on a GPI
+
+    0: KE_IEN
+    Key events interrupt enable to host processor
+    0 = disabled; INT is not asserted when a key event occurs
+    1 = enabled; INT becomes asserted when a key event occurs
+   */
+
+  // 10111001 xB9 -- fifo overflow enabled
+  // 10011001 x99 -- fifo overflow disabled
+
+  /* write(REGISTER_CFG, 0x99); */
+  uint8_t cfg = 0x99;
+  i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_CFG, &cfg, 1, TCA8418_I2C_TIMEOUT);
+  // delay here?
+  _delay_ms(100);
+  print("tca8418_init() done\n");
+}
+
+bool tca8418_update(matrix_row_t current_matrix[]) {
+  bool matrix_changed = false;
+  uint8_t key_event = 0;
+  uint8_t key_code, key_down, key_row, key_col;
+
+  i2c_readReg(TCA8418_I2C_ADDRESS, REGISTER_KEY_EVENT_A, &key_event, 1, TCA8418_I2C_TIMEOUT);
+  _delay_ms(10);
+  /* xprintf("event: %d\n", key_event); */
+
+  // if there is a new event
+  if (key_event > 0) {
+    matrix_changed = true;
+
+    key_code = key_event & 0x7F;
+    key_down = (key_event & 0x80) >> 7;
+    key_row = key_code / MATRIX_COLS_PER_SIDE;
+    key_col = key_code % MATRIX_COLS_PER_SIDE;
+
+    xprintf("event: %d, code: %d, down: %d, row: %d, col: %d\n", key_event, key_code, key_down, key_row, key_col);
+
+    if (key_down) {
+    }
+    else {
+    }
+  }
+
+  return matrix_changed;
+}
 
 #if (MATRIX_COLS <= 8)
 #    define print_matrix_header() print("\nr/c 01234567\n")
@@ -225,6 +354,7 @@ static bool read_rows_on_col(matrix_row_t current_matrix[], uint8_t current_col)
 #endif
 
 void matrix_init(void) {
+    print("matrix_init()\n");
     // initialize key pins
     init_pins();
 
@@ -236,6 +366,7 @@ void matrix_init(void) {
 
     debounce_init(MATRIX_ROWS);
 
+    tca8418_init();
     matrix_init_quantum();
 }
 
@@ -254,11 +385,13 @@ uint8_t matrix_scan(void) {
         // USB/Microcontroller Side
         changed |= read_rows_on_col(raw_matrix, current_col);
       }
-      else {
+      // else {
         // i2c Side
         // TODO read tca8418 i2c fifo
-      }
+      // }
     }
+    changed |= tca8418_update(raw_matrix);
+
 #endif
 
     debounce(raw_matrix, matrix, MATRIX_ROWS, changed);
