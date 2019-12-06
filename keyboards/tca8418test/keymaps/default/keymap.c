@@ -5,8 +5,8 @@
 #include "tca8418test.h"
 
 enum layer_id {
-  LAYER_COLEMAK,
   LAYER_QWERTY,
+  LAYER_COLEMAK,
   LAYER_SYMBOLS,
   LAYER_FNARROWS,
   LAYER_MOUSEMACRO,
@@ -17,46 +17,50 @@ enum macro_id {
   GITCOMMIT,
 };
 
+#define __v KC_TRNS
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-[LAYER_COLEMAK] = LAYOUT(
-                         KC_Q,   KC_W,    KC_F,   KC_P,   KC_G,   RESET,  /* */ RESET,  KC_J,   KC_L,   KC_U,    KC_Y,    KC_SCLN, \
-                         KC_A,   KC_R,    KC_S,   KC_T,   KC_D,   RESET,  /* */ RESET,  KC_H,   KC_N,   KC_E,    KC_I,    KC_O, \
-                         KC_Z,   KC_X,    KC_C,   KC_V,   KC_B,   KC_FN3, /* */ KC_FN4, KC_K,   KC_M,   KC_COMM, KC_DOT,  KC_SLSH, \
-                         KC_FN7, KC_LGUI, KC_TAB, KC_FN1, KC_FN6, RESET,  /* */ RESET,  KC_FN5, KC_FN0, KC_MINS, KC_QUOT, KC_FN8),
+//  Q W E R T    Y U I O P
+//  A S D F G    H J K L ;
+//  Z X C V B    N M , . backslash
+//                   - ' =
 
-// Q  W  E  R  T      Y  U  I     O    P
-// A  S  D  F  G      H  J  K     L    SCLN
-// Z  X  C  V  B      N  M  COMM  DOT  SLSH
 
 [LAYER_QWERTY] = LAYOUT(
-                        KC_Q,   KC_W,    KC_E,   KC_R,   KC_T,   KC_TRNS, /* */ KC_TRNS, KC_Y,   KC_U,   KC_I,    KC_O,    KC_P, \
-                        KC_A,   KC_S,    KC_D,   KC_F,   KC_G,   KC_TRNS, /* */ KC_TRNS, KC_H,   KC_J,   KC_K,    KC_L,    KC_SCLN, \
-                        KC_Z,   KC_X,    KC_C,   KC_V,   KC_B,   KC_FN3,  /* */ KC_FN4,  KC_N,   KC_M,   KC_COMM, KC_DOT,  KC_SLSH, \
-                        KC_FN7, KC_LGUI, KC_TAB, KC_FN1, KC_FN6, KC_TRNS, /* */ KC_TRNS, KC_FN5, KC_FN0, KC_MINS, KC_QUOT, KC_FN8),
+                        KC_Q,   KC_W,    KC_E,   KC_R,   KC_T,   KC_INS,    /* */ KC_PGUP,  KC_Y,   KC_U,   KC_I,    KC_O,    KC_P,    \
+                        KC_A,   KC_S,    KC_D,   KC_F,   KC_G,   KC_DEL,    /* */ KC_PGDN,  KC_H,   KC_J,   KC_K,    KC_L,    KC_SCLN, \
+                        KC_Z,   KC_X,    KC_C,   KC_V,   KC_B,   KC_FN3,    /* */ KC_FN4,   KC_N,   KC_M,   KC_COMM, KC_DOT,  KC_SLSH, \
+                        KC_FN7, KC_LGUI, KC_TAB, KC_FN1, KC_FN6, KC_ESCAPE, /* */ KC_ENTER, KC_FN5, KC_FN0, KC_MINS, KC_QUOT, KC_EQUAL ),
+
+[LAYER_COLEMAK] = LAYOUT(
+                         KC_Q,   KC_W,    KC_F,   KC_P,   KC_G,   KC_INS,    /* */ KC_PGUP,  KC_J,   KC_L,   KC_U,    KC_Y,    KC_SCLN, \
+                         KC_A,   KC_R,    KC_S,   KC_T,   KC_D,   KC_DEL,    /* */ KC_PGDN,  KC_H,   KC_N,   KC_E,    KC_I,    KC_O,    \
+                         KC_Z,   KC_X,    KC_C,   KC_V,   KC_B,   KC_FN3,    /* */ KC_FN4,   KC_K,   KC_M,   KC_COMM, KC_DOT,  KC_SLSH, \
+                         KC_FN7, KC_LGUI, KC_TAB, KC_FN1, KC_FN6, KC_ESCAPE, /* */ KC_ENTER, KC_FN5, KC_FN0, KC_MINS, KC_QUOT, KC_EQUAL ),
 
 // * 7 8 9 0  | [ ] # !
 // + 4 5 6 ~  @ ( ) ^ $
-// = 1 2 3 `  & { } % BSLASH
-//   0 .          - '
+// = 1 2 3 `  & { } % backslash
+//   0 .          - ' =
 
 [LAYER_SYMBOLS] = LAYOUT(
-                         S(KC_8),   KC_7, KC_8,   KC_9,    KC_0,        KC_NO, /* */ KC_NO, S(KC_BSLS), KC_LBRC,    KC_RBRC,    S(KC_3),    S(KC_1), \
-                         S(KC_EQL), KC_4, KC_5,   KC_6,    S(KC_GRAVE), KC_NO, /* */ KC_NO, S(KC_2),    S(KC_9),    S(KC_0),    S(KC_6),    S(KC_4), \
-                         KC_EQL,    KC_1, KC_2,   KC_3,    KC_GRAVE,    KC_NO, /* */ KC_NO, S(KC_7),    S(KC_LBRC), S(KC_RBRC), S(KC_5),    KC_BSLS, \
-                         KC_TRNS,   KC_0, KC_DOT, KC_TRNS, KC_TRNS,     KC_NO, /* */ KC_NO, KC_TRNS,    KC_TRNS,    S(KC_MINS), S(KC_QUOT), KC_TRNS),
+                         S(KC_8),   KC_7, KC_8,   KC_9, KC_0,        __v, /* */ __v, S(KC_BSLS), KC_LBRC,    KC_RBRC,    S(KC_3),    S(KC_1),    \
+                         S(KC_EQL), KC_4, KC_5,   KC_6, S(KC_GRAVE), __v, /* */ __v, S(KC_2),    S(KC_9),    S(KC_0),    S(KC_6),    S(KC_4),    \
+                         KC_EQL,    KC_1, KC_2,   KC_3, KC_GRAVE,    __v, /* */ __v, S(KC_7),    S(KC_LBRC), S(KC_RBRC), S(KC_5),    KC_BSLS,    \
+                         __v,       KC_0, KC_DOT, __v,  __v,         __v, /* */ __v, __v,        __v,        S(KC_MINS), S(KC_QUOT), S(KC_EQUAL) ),
 
 [LAYER_FNARROWS] = LAYOUT(
-                          KC_INS,  KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_NO, /* */ KC_NO, KC_HOME, KC_RGHT,    KC_END,     KC_PGUP,    KC_PSCR, \
-                          KC_DEL,  KC_F4,   KC_F5,   KC_F6,   KC_F11,  KC_NO, /* */ KC_NO, KC_LEFT, KC_DOWN,    KC_UP,      KC_PGDN,    KC_PAUSE, \
-                          KC_CAPS, KC_F1,   KC_F2,   KC_F3,   KC_F12,  KC_NO, /* */ KC_NO, KC_VOLD, KC_MS_BTN1, KC_MS_BTN2, KC_MS_BTN3, KC_MS_BTN4, \
-                          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_NO, /* */ KC_NO, KC_TRNS, KC_TRNS,    KC_TRNS,    KC_TRNS,    RESET),
+                          KC_INS,  KC_F7, KC_F8, KC_F9, KC_F10, __v, /* */ __v, KC_HOME, KC_RGHT, KC_END,  KC_END,  KC_PSCREEN, \
+                          KC_DEL,  KC_F4, KC_F5, KC_F6, KC_F11, __v, /* */ __v, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_PAUSE,   \
+                          KC_CAPS, KC_F1, KC_F2, KC_F3, KC_F12, __v, /* */ __v, KC_VOLD, KC_VOLU, KC_MUTE, KC_F13,  KC_F14,     \
+                          __v,     __v,   __v,   __v,   __v,    __v, /* */ __v, __v,     __v,     __v,     __v,     RESET       ),
 
 [LAYER_MOUSEMACRO] = LAYOUT(
-                            KC_FN12, KC_BTN1, KC_MS_U, KC_BTN2, KC_WH_U, KC_TRNS, /* */ KC_TRNS, KC_NO, KC_NO, KC_NO,   KC_NO, KC_NO, \
-                            KC_NO,   KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D, KC_TRNS, /* */ KC_TRNS, KC_NO, KC_NO, KC_FN10, KC_NO, KC_NO, \
-                            KC_NO,   KC_NO,   KC_FN11, KC_BTN3, KC_NO,   KC_TRNS, /* */ KC_TRNS, KC_NO, KC_NO, KC_NO,   KC_NO, KC_NO, \
-                            KC_TRNS, KC_NO,   KC_NO,   KC_NO,   KC_BTN1, KC_NO,   /* */ KC_NO,   KC_NO, KC_NO, KC_NO,   KC_NO, KC_FN8),
+                            KC_FN12, KC_BTN1, KC_MS_U, KC_BTN2, KC_WH_U, __v, /* */ __v, ___, ___, ___,     ___, ___, \
+                            ___,     KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_D, __v, /* */ __v, ___, ___, KC_FN10, ___, ___, \
+                            ___,     ___,     KC_FN11, KC_BTN3, ___,     __v, /* */ __v, ___, ___, ___,     ___, ___, \
+                            ___,     ___,     ___,     ___,     KC_BTN1, __v, /* */ __v, ___, ___, ___,     ___, ___  ),
 };
 
 // Macro definition
@@ -171,8 +175,8 @@ const uint16_t PROGMEM fn_actions[] = {
   [8] = ACTION_LAYER_TAP_KEY(4, KC_ENT),
   [9] = ACTION_MACRO(GITCOMMIT),
   [10] = ACTION_MACRO(ECHOH),
-  [11] = ACTION_DEFAULT_LAYER_SET(0),
-  [12] = ACTION_DEFAULT_LAYER_SET(1),
+  [11] = ACTION_DEFAULT_LAYER_SET(1),
+  [12] = ACTION_DEFAULT_LAYER_SET(0),
 };
 
 void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
