@@ -13,7 +13,8 @@
 #include "i2c_master.h"
 #include QMK_KEYBOARD_H
 
-#define TCA8418_I2C_ADDRESS 0x34
+// Must shift device address left 1 bit
+#define TCA8418_I2C_ADDRESS (0x34<<1)
 #define TCA8418_I2C_TIMEOUT 100
 
 #define KEY_EVENT_LIST_SIZE 10
@@ -51,9 +52,9 @@ void tca8418_init(void) {
   uint8_t enabled_cols = 0x3F; // COLS 5 to 0
 
   i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_KP_GPIO1, &enabled_rows, 1, TCA8418_I2C_TIMEOUT);
-  _delay_ms(10);
   i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_KP_GPIO2, &enabled_cols, 1, TCA8418_I2C_TIMEOUT);
-  _delay_ms(10);
+  enabled_cols = 0;
+  i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_KP_GPIO3, &enabled_cols, 1, TCA8418_I2C_TIMEOUT);
 
   /*
     BIT: NAME
@@ -103,11 +104,9 @@ void tca8418_init(void) {
   // 10111001 xB9 -- fifo overflow enabled
   // 10011001 x99 -- fifo overflow disabled
 
-  /* write(REGISTER_CFG, 0x99); */
   uint8_t cfg = 0x99;
   i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_CFG, &cfg, 1, TCA8418_I2C_TIMEOUT);
-  // delay here?
-  _delay_ms(100);
+  _delay_ms(10);
   print("tca8418_init() done\n");
 }
 
@@ -117,8 +116,6 @@ bool tca8418_update(matrix_row_t current_matrix[]) {
   uint8_t key_code, key_down, key_row, key_col;
 
   i2c_readReg(TCA8418_I2C_ADDRESS, REGISTER_KEY_EVENT_A, &key_event, 1, TCA8418_I2C_TIMEOUT);
-  _delay_ms(10);
-  /* xprintf("event: %d\n", key_event); */
 
   // if there is a new event
   if (key_event > 0) {
