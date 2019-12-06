@@ -13,6 +13,23 @@
 #include "i2c_master.h"
 #include QMK_KEYBOARD_H
 
+#if (MATRIX_COLS <= 8)
+#    define print_matrix_header() print("\nr/c 01234567\n")
+#    define print_matrix_row(row) print_bin_reverse8(matrix_get_row(row))
+#    define matrix_bitpop(i) bitpop(matrix[i])
+#    define ROW_SHIFTER ((uint8_t)1)
+#elif (MATRIX_COLS <= 16)
+#    define print_matrix_header() print("\nr/c 0123456789ABCDEF\n")
+#    define print_matrix_row(row) print_bin_reverse16(matrix_get_row(row))
+#    define matrix_bitpop(i) bitpop16(matrix[i])
+#    define ROW_SHIFTER ((uint16_t)1)
+#elif (MATRIX_COLS <= 32)
+#    define print_matrix_header() print("\nr/c 0123456789ABCDEF0123456789ABCDEF\n")
+#    define print_matrix_row(row) print_bin_reverse32(matrix_get_row(row))
+#    define matrix_bitpop(i) bitpop32(matrix[i])
+#    define ROW_SHIFTER ((uint32_t)1)
+#endif
+
 // Must shift device address left 1 bit
 #define TCA8418_I2C_ADDRESS (0x34<<1)
 #define TCA8418_I2C_TIMEOUT 100
@@ -51,9 +68,10 @@ void tca8418_init(void) {
   uint8_t enabled_rows = 0x0F; // ROWS 3 to 0
   uint8_t enabled_cols = 0x3F; // COLS 5 to 0
 
+  enabled_rows = 0xFF;
   i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_KP_GPIO1, &enabled_rows, 1, TCA8418_I2C_TIMEOUT);
   i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_KP_GPIO2, &enabled_cols, 1, TCA8418_I2C_TIMEOUT);
-  enabled_cols = 0;
+  enabled_cols = 0xFF;
   i2c_writeReg(TCA8418_I2C_ADDRESS, REGISTER_KP_GPIO3, &enabled_cols, 1, TCA8418_I2C_TIMEOUT);
 
   /*
@@ -119,40 +137,28 @@ bool tca8418_update(matrix_row_t current_matrix[]) {
 
   // if there is a new event
   if (key_event > 0) {
+    key_event--; // events start at 1, subtract 1 to get nice row/col values
     matrix_changed = true;
 
     key_code = key_event & 0x7F;
     key_down = (key_event & 0x80) >> 7;
-    key_row = key_code / MATRIX_COLS_PER_SIDE;
-    key_col = key_code % MATRIX_COLS_PER_SIDE;
+    key_row = key_code / 10;
+    key_col = key_code % 10;
 
     xprintf("event: %d, code: %d, down: %d, row: %d, col: %d\n", key_event, key_code, key_down, key_row, key_col);
 
     if (key_down) {
+      // pressed, update matrix with a 1
+      current_matrix[key_row] |= (ROW_SHIFTER << key_col);
     }
     else {
+      // released, set bit in matrix to 0
+      current_matrix[key_row] &= ~(ROW_SHIFTER << key_col);
     }
   }
 
   return matrix_changed;
 }
-
-#if (MATRIX_COLS <= 8)
-#    define print_matrix_header() print("\nr/c 01234567\n")
-#    define print_matrix_row(row) print_bin_reverse8(matrix_get_row(row))
-#    define matrix_bitpop(i) bitpop(matrix[i])
-#    define ROW_SHIFTER ((uint8_t)1)
-#elif (MATRIX_COLS <= 16)
-#    define print_matrix_header() print("\nr/c 0123456789ABCDEF\n")
-#    define print_matrix_row(row) print_bin_reverse16(matrix_get_row(row))
-#    define matrix_bitpop(i) bitpop16(matrix[i])
-#    define ROW_SHIFTER ((uint16_t)1)
-#elif (MATRIX_COLS <= 32)
-#    define print_matrix_header() print("\nr/c 0123456789ABCDEF0123456789ABCDEF\n")
-#    define print_matrix_row(row) print_bin_reverse32(matrix_get_row(row))
-#    define matrix_bitpop(i) bitpop32(matrix[i])
-#    define ROW_SHIFTER ((uint32_t)1)
-#endif
 
 #ifdef MATRIX_MASKED
 extern const matrix_row_t matrix_mask[];
@@ -382,11 +388,8 @@ uint8_t matrix_scan(void) {
         // USB/Microcontroller Side
         changed |= read_rows_on_col(raw_matrix, current_col);
       }
-      // else {
-        // i2c Side
-        // TODO read tca8418 i2c fifo
-      // }
     }
+    // i2c Side
     changed |= tca8418_update(raw_matrix);
 
 #endif
