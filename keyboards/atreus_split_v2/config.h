@@ -66,33 +66,6 @@
 //#define NO_ACTION_MACRO
 //#define NO_ACTION_FUNCTION
 
-/*
- * Keyboard Matrix Assignments
- *
- * Change this to how you wired your keyboard
- * COLS: AVR pins used for columns, left to right
- * ROWS: AVR pins used for rows, top to bottom
- * DIODE_DIRECTION: COL2ROW = COL = Anode (+), ROW = Cathode (-, marked on diode)
- *                  ROW2COL = ROW = Anode (+), COL = Cathode (-, marked on diode)
- *
-*/
-
-
-/*
-// Feather BLE Row & Column Pins
-#define MATRIX_ROW_PINS { F7, F6, F5, F4 }
-#define MATRIX_COL_PINS { F1, D6, B7, B6, B5, D7 }
-*/
-
-// ProMicro Row & Column Pins
-#define MATRIX_ROW_PINS { F4, F5, F6, F7 }
-#define MATRIX_COL_PINS { B5, B4, E6, D7, C6, D4 }
-
-#define UNUSED_PINS
-
-/* #define DIODE_DIRECTION COL2ROW */
-#define DIODE_DIRECTION ROW2COL
-
 // Mouse key movement acceleration
 #define MOUSEKEY_DELAY 1
 #define MOUSEKEY_INTERVAL 1

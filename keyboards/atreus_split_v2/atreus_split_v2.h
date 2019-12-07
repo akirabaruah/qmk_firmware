@@ -21,6 +21,12 @@
 #include "i2c_master.h"
 #include <util/delay.h>
 
+#ifdef KEYBOARD_featherble
+    #include "featherble.h"
+#elif KEYBOARD_promicro
+    #include "promicro.h"
+#endif
+
 #define ___ KC_NO
 #define __v KC_TRNS
 

@@ -1,22 +1,3 @@
-# MCU name
-MCU = atmega32u4
-
-# FeatherBLE
-# F_CPU = 8000000
-
-# ProMicro
-F_CPU = 16000000
-
-# Bootloader selection
-#   Teensy       halfkay
-#   Pro Micro    caterina
-#   Atmel DFU    atmel-dfu
-#   LUFA DFU     lufa-dfu
-#   QMK DFU      qmk-dfu
-#   ATmega32A    bootloadHID
-#   ATmega328P   USBasp
-BOOTLOADER = caterina
-
 # Build Options
 #   change yes to no to disable
 #
@@ -42,3 +23,5 @@ SRC += matrix.c
 QUANTUM_LIB_SRC += i2c_master.c
 
 CUSTOM_MATRIX    = yes # Custom matrix_init and matrix_scan
+
+DEFAULT_FOLDER = atreus_split_v2/promicro
