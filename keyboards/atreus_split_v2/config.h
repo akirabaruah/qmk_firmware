@@ -25,9 +25,9 @@
 #define VENDOR_ID       0x1209
 #define PRODUCT_ID      0xA1E5
 #define DEVICE_VER      0x0008
-#define MANUFACTURER    Technomancy
-#define PRODUCT         Atreus
-#define DESCRIPTION     QMK keyboard firmware for Atreus
+#define MANUFACTURER    Tonedawg Heavy Industries
+#define PRODUCT         Robert-DNF-Keyboard
+#define DESCRIPTION     Keyboard running QMK Firmware: github.com/qmk
 
 /* key matrix size */
 #define MATRIX_ROWS 4

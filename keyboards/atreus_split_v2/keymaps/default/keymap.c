@@ -2,7 +2,6 @@
 // This is the canonical layout file for the Quantum project. If you want to add another keyboard,
 
 #include QMK_KEYBOARD_H
-#include "tca8418test.h"
 
 enum layer_id {
   LAYER_QWERTY,
