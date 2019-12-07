@@ -93,7 +93,8 @@
 /* #define DIODE_DIRECTION COL2ROW */
 #define DIODE_DIRECTION ROW2COL
 
-#define MOUSEKEY_DELAY 0
+// Mouse key movement acceleration
+#define MOUSEKEY_DELAY 1
 #define MOUSEKEY_INTERVAL 1
 #define MOUSEKEY_MAX_SPEED 7
 #define MOUSEKEY_TIME_TO_MAX 255
