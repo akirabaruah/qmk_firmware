@@ -20,7 +20,6 @@
 
 // Feather BLE Row & Column Pins
 #define MATRIX_ROW_PINS { F7, F6, F5, F4 }
-/* #define MATRIX_COL_PINS { F1, D6, B7, B6, B5, D7 } */
 #define MATRIX_COL_PINS { F1, D6, B7, B6, D7, C6 }
 
 #define UNUSED_PINS
