@@ -35,14 +35,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 //  Q W E R T    Y U I O P
 //  A S D F G    H J K L ;
-//  Z X C V B    N M , . backslash
-//                   - ' =
+//  Z X C V B    N M , . /
+//                   - = '
 
 [LAYER_QWERTY] = LAYOUT(
-                        KC_Q,      KC_W,    KC_E,   KC_R,               KC_T,                 KC_INS,              /*|*/ KC_PGUP,                     KC_Y,                KC_U,              KC_I,    KC_O,    KC_P,                         \
-                        KC_A,      KC_S,    KC_D,   KC_F,               KC_G,                 KC_DEL,              /*|*/ KC_PGDN,                     KC_H,                KC_J,              KC_K,    KC_L,    KC_SCLN,                      \
-                        KC_Z,      KC_X,    KC_C,   KC_V,               KC_B,                 MT(MOD_LCTL,KC_ESC), /*|*/ MT(MOD_LALT,KC_ENT),         KC_N,                KC_M,              KC_COMM, KC_DOT,  KC_SLSH,                      \
-                        HYPER_ESC, KC_LGUI, KC_TAB, MO(LAYER_FNARROWS), MT(MOD_LSFT,KC_BSPC), KC_ESC,              /*|*/ LT(LAYER_MOUSEMACRO,KC_ENT), MT(MOD_RSFT,KC_SPC), MO(LAYER_SYMBOLS), KC_MINS, KC_QUOT, LT(LAYER_MOUSEMACRO,KC_EQUAL) ),
+                        KC_Q,   KC_W,      KC_E,    KC_R,               KC_T,                 KC_TAB,              /*|*/ KC_PGUP,                     KC_Y,                KC_U,              KC_I,    KC_O,     KC_P,    \
+                        KC_A,   KC_S,      KC_D,    KC_F,               KC_G,                 S(KC_TAB),           /*|*/ KC_PGDN,                     KC_H,                KC_J,              KC_K,    KC_L,     KC_SCLN, \
+                        KC_Z,   KC_X,      KC_C,    KC_V,               KC_B,                 MT(MOD_LCTL,KC_TAB), /*|*/ MT(MOD_RALT,KC_ENT),         KC_N,                KC_M,              KC_COMM, KC_DOT,   KC_SLSH, \
+                        KC_TAB, HYPER_ESC, KC_LGUI, MO(LAYER_FNARROWS), MT(MOD_LSFT,KC_BSPC), MT(MOD_LALT,KC_ESC), /*|*/ LT(LAYER_MOUSEMACRO,KC_DEL), MT(MOD_RSFT,KC_SPC), MO(LAYER_SYMBOLS), KC_MINS, KC_EQUAL, KC_QUOT  ),
 
 [LAYER_COLEMAK] = LAYOUT(
                          KC_Q, KC_W, KC_F, KC_P, KC_G, __v, /*|*/ __v, KC_J, KC_L, KC_U,    KC_Y,   KC_SCLN, \
@@ -56,15 +56,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //   0 .          - ' =
 
 [LAYER_SYMBOLS] = LAYOUT(
-                         S(KC_8),   KC_7, KC_8,   KC_9, KC_0,        __v, /*|*/ __v, S(KC_BSLS), KC_LBRC,    KC_RBRC,    S(KC_3),    S(KC_1),    \
-                         S(KC_EQL), KC_4, KC_5,   KC_6, S(KC_GRAVE), __v, /*|*/ __v, S(KC_2),    S(KC_9),    S(KC_0),    S(KC_6),    S(KC_4),    \
-                         KC_EQL,    KC_1, KC_2,   KC_3, KC_GRAVE,    __v, /*|*/ __v, S(KC_7),    S(KC_LBRC), S(KC_RBRC), S(KC_5),    KC_BSLS,    \
-                         __v,       KC_0, KC_DOT, ___,  __v,         __v, /*|*/ __v, __v,        ___,        S(KC_MINS), S(KC_QUOT), S(KC_EQUAL) ),
+                         S(KC_8),   KC_7, KC_8,   KC_9, KC_0,        __v, /*|*/ __v, S(KC_BSLS), KC_LBRC, KC_RBRC, S(KC_3),  S(KC_1),    \
+                         S(KC_EQL), KC_4, KC_5,   KC_6, S(KC_GRAVE), __v, /*|*/ __v, KC_LEFT,    KC_DOWN, KC_UP,   KC_RIGHT, KC_QUOT,    \
+                         KC_EQL,    KC_1, KC_2,   KC_3, KC_GRAVE,    __v, /*|*/ __v, S(KC_7),    KC_LEFT, KC_DOWN, KC_RIGHT, KC_BSLS,    \
+                         __v,       KC_0, KC_DOT, ___,  __v,         __v, /*|*/ __v, __v,        KC_LEFT, KC_DOWN, KC_RIGHT, S(KC_EQUAL) ),
 
 [LAYER_FNARROWS] = LAYOUT(
                           KC_INS,  KC_F7, KC_F8, KC_F9, KC_F10, __v, /*|*/ __v, KC_HOME, KC_RGHT, KC_END,  KC_END,  KC_PSCREEN, \
-                          KC_DEL,  KC_F4, KC_F5, KC_F6, KC_F11, __v, /*|*/ __v, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_PAUSE,   \
-                          KC_CAPS, KC_F1, KC_F2, KC_F3, KC_F12, __v, /*|*/ __v, KC_VOLD, KC_VOLU, KC_MUTE, KC_F13,  KC_F14,     \
+                          KC_DEL,  KC_F4, KC_F5, KC_F6, KC_F11, __v, /*|*/ __v, KC_VOLU, KC_DOWN, KC_UP,   KC_RGHT, KC_PAUSE,   \
+                          KC_CAPS, KC_F1, KC_F2, KC_F3, KC_F12, __v, /*|*/ __v, KC_VOLD, KC_LEFT, KC_DOWN, KC_RGHT, KC_F14,     \
                           __v,     __v,   __v,   ___,   __v,    __v, /*|*/ __v, __v,     ___,     __v,     __v,     RESET       ),
 
 [LAYER_MOUSEMACRO] = LAYOUT(
