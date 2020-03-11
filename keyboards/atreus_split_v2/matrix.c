@@ -328,31 +328,37 @@ bool tca8418_update(void) {
   bool matrix_changed = false;
   uint8_t key_event = 0;
   uint8_t key_code, key_down, key_row, key_col;
+  uint8_t i = 0;
 
-  i2c_readReg(TCA8418_I2C_ADDRESS, REGISTER_KEY_EVENT_A, &key_event, 1, TCA8418_I2C_TIMEOUT);
+  for (i = REGISTER_KEY_EVENT_A; i <= REGISTER_KEY_EVENT_J; i++) {
 
-  // if there is a new event
-  if (key_event > 0) {
-    key_event--; // events start at 1, subtract 1 to get nice row/col values
-    matrix_changed = true;
+    i2c_readReg(TCA8418_I2C_ADDRESS, i, &key_event, 1, TCA8418_I2C_TIMEOUT);
 
-    key_code = key_event & 0x7F;
-    key_down = (key_event & 0x80) >> 7;
-    key_row = key_code / 10;
-    key_col = key_code % 10;
-    /* xprintf("event: %d, code: %d, down: %d, row: %d, col: %d\n", key_event, key_code, key_down, key_row, key_col); */
+    // if there is a new event
+    if (key_event > 0) {
+      key_event--; // events start at 1, subtract 1 to get nice row/col values
+      matrix_changed = true;
 
-    // shift column over to the other side for raw_matrix updating
-    key_col += MATRIX_COLS_PER_SIDE;
+      key_code = key_event & 0x7F;
+      key_down = (key_event & 0x80) >> 7;
+      key_row = key_code / 10;
+      key_col = key_code % 10;
+      /* xprintf("event: %d, code: %d, down: %d, row: %d, col: %d\n", key_event, key_code, key_down, key_row, key_col); */
 
-    if (key_down) {
-      // pressed, update matrix with a 1
-      raw_matrix[key_row] |= (ROW_SHIFTER << key_col);
+      // shift column over to the other side for raw_matrix updating
+      key_col += MATRIX_COLS_PER_SIDE;
+
+      if (key_down) {
+        // pressed, update matrix with a 1
+        raw_matrix[key_row] |= (ROW_SHIFTER << key_col);
+      }
+      else {
+        // released, set bit in matrix to 0
+        raw_matrix[key_row] &= ~(ROW_SHIFTER << key_col);
+      }
     }
-    else {
-      // released, set bit in matrix to 0
-      raw_matrix[key_row] &= ~(ROW_SHIFTER << key_col);
-    }
+    else
+      break;
   }
 
   return matrix_changed;
