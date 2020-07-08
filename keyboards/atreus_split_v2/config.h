@@ -20,7 +20,7 @@
 
 /* USB Device descriptor parameter */
 
-#define F_SCL 100000UL  // SCL frequency
+#define F_SCL 400000UL  // SCL frequency
 
 #define VENDOR_ID       0x1209
 #define PRODUCT_ID      0xA1E5

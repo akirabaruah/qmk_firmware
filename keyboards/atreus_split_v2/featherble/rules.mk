@@ -14,6 +14,6 @@ F_CPU = 8000000
 #   ATmega328P   USBasp
 BOOTLOADER = caterina
 
-BLUETOOTH_ENABLE = yes
-BLUETOOTH = AdafruitBLE
+# BLUETOOTH_ENABLE = yes
+# BLUETOOTH = AdafruitBLE
 
